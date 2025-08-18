@@ -1,0 +1,41 @@
+.todoListContainer {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.todoListWrapper {
+    width: 500px;
+    height: 600px;
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.todoTitle {
+    display: flex;
+    gap: 10px;
+}
+
+.todoTitle > h1 {
+    margin-bottom: 20px;
+    color: rgb(0, 0, 83);
+}
+
+.todoTitle > img {
+    height: 40px;
+    width: 40px;
+}
+
+.addItemForm {
+    margin-bottom: 30px;
+}
+
+.itemList {
+    height: 405px;
+    overflow-y: auto;
+}

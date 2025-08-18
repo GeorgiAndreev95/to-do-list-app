@@ -1,0 +1,27 @@
+.inputForm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: lightgray;
+    height: 40px;
+    border-radius: 25px;
+}
+
+.inputField {
+    width: 250px;
+    margin-left: 25px;
+    background: lightgray;
+    border: none;
+}
+
+.addButton {
+    padding: 0 40px;
+    height: 40px;
+    border-radius: 25px;
+    background: var(--main-coral);
+    color: white;
+}
+
+.addButton:hover {
+    background: var(--main-coral-highlight);
+}

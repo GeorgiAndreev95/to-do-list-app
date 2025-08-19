@@ -3,12 +3,12 @@
     align-items: center;
     justify-content: space-between;
     background: lightgray;
-    height: 40px;
+    height: 50px;
     border-radius: 25px;
 }
 
 .inputField {
-    width: 250px;
+    width: 475px;
     margin-left: 25px;
     background: lightgray;
     border: none;
@@ -16,7 +16,7 @@
 
 .addButton {
     padding: 0 40px;
-    height: 40px;
+    height: 50px;
     border-radius: 25px;
     background: var(--main-coral);
     color: white;

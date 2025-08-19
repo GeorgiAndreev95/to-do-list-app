@@ -8,7 +8,7 @@
 }
 
 .todoListWrapper {
-    width: 500px;
+    width: 700px;
     height: 600px;
     padding: 40px;
     background: white;
@@ -18,17 +18,18 @@
 
 .todoTitle {
     display: flex;
+    align-items: center;
     gap: 10px;
+    margin-bottom: 20px;
 }
 
 .todoTitle > h1 {
-    margin-bottom: 20px;
     color: rgb(0, 0, 83);
 }
 
 .todoTitle > img {
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
 }
 
 .addItemForm {

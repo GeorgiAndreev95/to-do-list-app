@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: lightgray;
+    background: #e4e4e4;
     height: 50px;
     border-radius: 25px;
 }
@@ -10,8 +10,22 @@
 .inputField {
     width: 475px;
     margin-left: 25px;
-    background: lightgray;
+    background: #e4e4e4;
     border: none;
+}
+
+.dateButton {
+    margin: 10px;
+}
+
+.dateButtonIcon {
+    height: 30px;
+    width: 30px;
+    color: gray;
+}
+
+.dateButtonIcon:hover {
+    color: var(--main-coral);
 }
 
 .addButton {

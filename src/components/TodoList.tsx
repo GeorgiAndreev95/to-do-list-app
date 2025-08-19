@@ -9,6 +9,23 @@ import classes from "./TodoList.module.css";
 const TodoList = () => {
     const [todoList, setTodoList] = useState<ListItem[]>([]);
     const [hasLoaded, setHasLoaded] = useState(false);
+    const groupedTodos = todoList.reduce(
+        (groups: Record<string, ListItem[]>, item) => {
+            const key = item.dueDate ?? "No Due Date";
+            if (!groups[key]) {
+                groups[key] = [];
+            }
+            groups[key].push(item);
+            return groups;
+        },
+        {}
+    );
+    const sortedGroups = Object.entries(groupedTodos).sort(([a], [b]) => {
+        if (a === "No Due Date") return 1;
+        if (b === "No Due Date") return -1;
+
+        return new Date(a).getTime() - new Date(b).getTime();
+    });
 
     const addItemHandler = (item: ListItem) => {
         setTodoList([...todoList, item]);
@@ -28,10 +45,14 @@ const TodoList = () => {
         setTodoList(updatedList);
     };
 
-    const editItemHandler = (description: string, item: ListItem) => {
+    const editItemHandler = (
+        description: string,
+        date: string | null,
+        item: ListItem
+    ) => {
         const updatedList = todoList.map((element) => {
             if (element.id === item.id) {
-                return { ...element, description };
+                return { ...element, description, dueDate: date };
             }
             return element;
         });
@@ -63,17 +84,30 @@ const TodoList = () => {
                     <AddItemForm addItemHandler={addItemHandler} />
                 </div>
                 <div className={classes.itemList}>
-                    {todoList.map((listItem) => {
-                        return (
-                            <TodoListItem
-                                key={listItem.id}
-                                listItem={listItem}
-                                deleteItemHandler={deleteItemHandler}
-                                handleCheckboxChange={handleCheckboxChange}
-                                editItemHandler={editItemHandler}
-                            />
-                        );
-                    })}
+                    <div className={classes.itemList}>
+                        {sortedGroups.map(([date, items]) => (
+                            <div key={date} className={classes.dateGroup}>
+                                {date !== "No Due Date" ? (
+                                    <h3>
+                                        {new Date(date).toLocaleDateString()}
+                                    </h3>
+                                ) : (
+                                    <h3>No Due Date</h3>
+                                )}
+                                {items.map((listItem) => (
+                                    <TodoListItem
+                                        key={listItem.id}
+                                        listItem={listItem}
+                                        deleteItemHandler={deleteItemHandler}
+                                        handleCheckboxChange={
+                                            handleCheckboxChange
+                                        }
+                                        editItemHandler={editItemHandler}
+                                    />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
+import { FaRegCalendarAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineEdit, MdOutlineCheck } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -11,7 +14,11 @@ type TodoListItemProps = {
     listItem: ListItem;
     deleteItemHandler: (id: string) => void;
     handleCheckboxChange: (item: ListItem) => void;
-    editItemHandler: (description: string, item: ListItem) => void;
+    editItemHandler: (
+        description: string,
+        date: string | null,
+        item: ListItem
+    ) => void;
 };
 
 const TodoListItem = ({
@@ -23,6 +30,9 @@ const TodoListItem = ({
     const [description, setDescription] = useState(listItem.description);
     const [isEditing, setIsEditing] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
+    const [newDueDate, setNewDueDate] = useState<Date | null>(
+        listItem.dueDate ? new Date(listItem.dueDate) : null
+    );
     const inputRef = useRef<HTMLInputElement>(null);
 
     const descriptionChangeHandler = (
@@ -41,7 +51,11 @@ const TodoListItem = ({
 
     useEffect(() => {
         if (!isEditing) {
-            editItemHandler(description, listItem);
+            editItemHandler(
+                description,
+                newDueDate?.toISOString() ?? null,
+                listItem
+            );
         }
     }, [isEditing]);
 
@@ -99,8 +113,27 @@ const TodoListItem = ({
                         </p>
                     )}
                 </div>
+
                 <div className={classes.buttonsWrapper}>
-                    {
+                    {isEditing && (
+                        <div className={classes.dateWrapper}>
+                            <DatePicker
+                                selected={newDueDate}
+                                onChange={(date) => setNewDueDate(date)}
+                                customInput={
+                                    <button
+                                        type="button"
+                                        className={classes.dateButton}
+                                    >
+                                        <FaRegCalendarAlt
+                                            className={classes.dateButtonIcon}
+                                        />
+                                    </button>
+                                }
+                            />
+                        </div>
+                    )}
+                    {!listItem.isCompleted && (
                         <button onClick={toggleEditHandler}>
                             {isEditing ? (
                                 <MdOutlineCheck
@@ -110,7 +143,8 @@ const TodoListItem = ({
                                 <MdOutlineEdit className={classes.otherIcons} />
                             )}
                         </button>
-                    }
+                    )}
+
                     <button onClick={() => deleteItemHandler(listItem.id)}>
                         <RxCross2
                             className={`${classes.otherIcons} ${classes.crossIcon}`}
@@ -119,7 +153,7 @@ const TodoListItem = ({
                 </div>
             </div>
             {isClicked && (
-                <div>
+                <div className={classes.notesContainer}>
                     <input type="text" placeholder="Add note:" />
                     <button>
                         <MdOutlineCheck className={classes.otherIcons} />

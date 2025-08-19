@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 import classes from "./AddItemForm.module.css";
 import type { ListItem } from "../types";
@@ -10,10 +13,18 @@ type AddItemFormProps = {
 
 const AddItemForm = ({ addItemHandler }: AddItemFormProps) => {
     const [description, setDescription] = useState("");
+    const [dueDate, setDueDate] = useState<Date | null>(null);
+
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        addItemHandler({ id: uuidv4(), description, isCompleted: false });
+        addItemHandler({
+            id: uuidv4(),
+            description,
+            isCompleted: false,
+            dueDate: dueDate?.toISOString() ?? null,
+        });
         setDescription("");
+        setDueDate(null);
     };
 
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +43,20 @@ const AddItemForm = ({ addItemHandler }: AddItemFormProps) => {
                 onChange={onInputChange}
                 autoComplete="off"
             />
+
+            <div className={classes.dateWrapper}>
+                <DatePicker
+                    selected={dueDate}
+                    onChange={(date) => setDueDate(date)}
+                    customInput={
+                        <button type="button" className={classes.dateButton}>
+                            <FaRegCalendarAlt
+                                className={classes.dateButtonIcon}
+                            />
+                        </button>
+                    }
+                />
+            </div>
             <button className={classes.addButton} type="submit">
                 Add
             </button>

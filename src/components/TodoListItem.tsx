@@ -65,6 +65,12 @@ const TodoListItem = ({
         }
     }, [isEditing]);
 
+    useEffect(() => {
+        if (listItem.isCompleted) {
+            setIsEditing(false);
+        }
+    }, [listItem.isCompleted]);
+
     console.log(listItem);
 
     return (

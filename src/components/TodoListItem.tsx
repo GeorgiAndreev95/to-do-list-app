@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { v4 as uuidv4 } from "uuid";
+import { motion, AnimatePresence } from "motion/react";
 
-import { FaRegCalendarAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaRegCalendarAlt, FaChevronDown } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineEdit, MdOutlineCheck } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -134,27 +135,6 @@ const TodoListItem = ({
                     />
                 </div>
                 <div className={classes.listItemWrapper}>
-                    {/* <div>
-                        {isEditing ? (
-                            <input
-                                ref={inputRef}
-                                className={classes.editInput}
-                                type="text"
-                                name="description"
-                                value={description}
-                                onChange={descriptionChangeHandler}
-                            />
-                        ) : (
-                            <p
-                                className={`${classes.itemDescription} ${
-                                    listItem.isCompleted ? classes.finished : ""
-                                }`}
-                                onClick={toggleIsClicked}
-                            >
-                                {listItem.description}
-                            </p>
-                        )}
-                    </div> */}
                     <div className={classes.descriptionRow}>
                         {isEditing ? (
                             <input
@@ -166,14 +146,30 @@ const TodoListItem = ({
                                 onChange={descriptionChangeHandler}
                             />
                         ) : (
-                            <p
-                                className={`${classes.itemDescription} ${
-                                    listItem.isCompleted ? classes.finished : ""
-                                }`}
+                            <span
+                                className={classes.textWrapper}
                                 onClick={toggleIsClicked}
                             >
-                                {listItem.description}
-                            </p>
+                                <span
+                                    className={`${classes.itemDescription} ${
+                                        listItem.isCompleted
+                                            ? classes.finished
+                                            : ""
+                                    }`}
+                                >
+                                    {listItem.description}
+                                </span>
+                                <motion.span
+                                    className={classes.strikeLine}
+                                    initial={false}
+                                    animate={{
+                                        width: listItem.isCompleted
+                                            ? "100%"
+                                            : "0%",
+                                    }}
+                                    transition={{ duration: 0.3 }}
+                                />
+                            </span>
                         )}
                         {listItem.subtasks.length > 0 && (
                             <button
@@ -181,15 +177,16 @@ const TodoListItem = ({
                                 onClick={toggleSubtasks}
                                 aria-label="Toggle subtasks"
                             >
-                                {showSubtasks ? (
-                                    <FaChevronUp
-                                        className={classes.dropdownIcon}
-                                    />
-                                ) : (
+                                <motion.div
+                                    animate={{
+                                        rotate: showSubtasks ? 180 : 360,
+                                    }}
+                                    transition={{ duration: 0.3 }}
+                                >
                                     <FaChevronDown
                                         className={classes.dropdownIcon}
                                     />
-                                )}
+                                </motion.div>
                             </button>
                         )}
                     </div>
@@ -237,52 +234,56 @@ const TodoListItem = ({
                     </div>
                 </div>
             </div>
-            {/* {listItem.subtasks?.length > 0 &&
-                listItem.subtasks.map((subtask) => {
-                    return (
-                        <SubtaskItem
-                            key={subtask.id}
-                            listItem={listItem}
-                            subtask={subtask}
-                            deleteSubtaskHandler={deleteSubtaskHandler}
-                            handleSubtaskCheckboxChange={
-                                handleSubtaskCheckboxChange
-                            }
-                            editSubtaskItemHandler={editSubtaskItemHandler}
-                            addSubtaskHandler={addSubtaskHandler}
-                        />
-                    );
-                })} */}
-            {showSubtasks &&
-                listItem.subtasks?.length > 0 &&
-                listItem.subtasks.map((subtask) => (
-                    <SubtaskItem
-                        key={subtask.id}
-                        listItem={listItem}
-                        subtask={subtask}
-                        deleteSubtaskHandler={deleteSubtaskHandler}
-                        handleSubtaskCheckboxChange={
-                            handleSubtaskCheckboxChange
-                        }
-                        editSubtaskItemHandler={editSubtaskItemHandler}
-                        addSubtaskHandler={addSubtaskHandler}
-                    />
-                ))}
-            {isClicked && (
-                <div className={classes.addSubtaskContainer}>
-                    <div className={classes.addSubtaskWrapper}>
-                        <input
-                            type="text"
-                            placeholder="Add Subtask..."
-                            value={subtaskDescription}
-                            onChange={subtaskDescriptionChangeHandler}
-                        />
-                        <button onClick={toggleIsClicked}>
-                            <MdOutlineCheck className={classes.otherIcons} />
-                        </button>
-                    </div>
-                </div>
-            )}
+            <AnimatePresence>
+                {showSubtasks && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className={classes.subtasksWrapper}
+                    >
+                        {listItem.subtasks?.map((subtask) => (
+                            <SubtaskItem
+                                key={subtask.id}
+                                listItem={listItem}
+                                subtask={subtask}
+                                deleteSubtaskHandler={deleteSubtaskHandler}
+                                handleSubtaskCheckboxChange={
+                                    handleSubtaskCheckboxChange
+                                }
+                                editSubtaskItemHandler={editSubtaskItemHandler}
+                                addSubtaskHandler={addSubtaskHandler}
+                            />
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {isClicked && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className={classes.addSubtaskContainer}
+                    >
+                        <div className={classes.addSubtaskWrapper}>
+                            <input
+                                type="text"
+                                placeholder="Add Subtask..."
+                                value={subtaskDescription}
+                                onChange={subtaskDescriptionChangeHandler}
+                            />
+                            <button onClick={toggleIsClicked}>
+                                <MdOutlineCheck
+                                    className={classes.otherIcons}
+                                />
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 };

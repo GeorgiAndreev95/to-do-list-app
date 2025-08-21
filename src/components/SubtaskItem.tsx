@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 import { FaCircleCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineEdit, MdOutlineCheck } from "react-icons/md";
@@ -92,15 +93,29 @@ const SubtaskItem = ({
                             onChange={subtaskDescriptionChangeHandler}
                         />
                     ) : (
-                        <p
-                            className={`${classes.itemDescription} ${
-                                subtask.isCompleted || listItem.isCompleted
-                                    ? classes.finished
-                                    : ""
-                            }`}
-                        >
-                            {subtask.description}
-                        </p>
+                        <span className={classes.textWrapper}>
+                            <span
+                                className={`${classes.itemDescription} ${
+                                    subtask.isCompleted || listItem.isCompleted
+                                        ? classes.finished
+                                        : ""
+                                }`}
+                            >
+                                {subtask.description}
+                            </span>
+                            <motion.span
+                                className={classes.strikeLine}
+                                initial={false}
+                                animate={{
+                                    width:
+                                        subtask.isCompleted ||
+                                        listItem.isCompleted
+                                            ? "100%"
+                                            : "0%",
+                                }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        </span>
                     )}
                 </div>
                 <div className={classes.buttonsWrapper}>

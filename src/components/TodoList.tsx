@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
 import AddItemForm from "./AddItemForm";
 import TodoListItem from "./TodoListItem";
@@ -165,41 +166,63 @@ const TodoList = () => {
                 <div className={classes.addItemForm}>
                     <AddItemForm addItemHandler={addItemHandler} />
                 </div>
+
                 <div className={classes.itemList}>
-                    <div className={classes.itemList}>
+                    <AnimatePresence>
                         {sortedGroups.map(([date, items]) => (
-                            <div key={date} className={classes.dateGroup}>
-                                {date !== "No Due Date" ? (
-                                    <h3 className={classes.date}>
-                                        {new Date(date).toLocaleDateString()}
-                                    </h3>
-                                ) : (
-                                    <h3>No Due Date</h3>
-                                )}
-                                {items.map((listItem) => (
-                                    <TodoListItem
-                                        key={listItem.id}
-                                        listItem={listItem}
-                                        deleteItemHandler={deleteItemHandler}
-                                        deleteSubtaskHandler={
-                                            deleteSubtaskHandler
-                                        }
-                                        handleCheckboxChange={
-                                            handleCheckboxChange
-                                        }
-                                        handleSubtaskCheckboxChange={
-                                            handleSubtaskCheckboxChange
-                                        }
-                                        editItemHandler={editItemHandler}
-                                        editSubtaskItemHandler={
-                                            editSubtaskItemHandler
-                                        }
-                                        addSubtaskHandler={addSubtaskHandler}
-                                    />
-                                ))}
-                            </div>
+                            <motion.div
+                                key={date}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className={classes.dateGroup}
+                            >
+                                <h3 className={classes.date}>
+                                    {date !== "No Due Date"
+                                        ? new Date(date).toLocaleDateString()
+                                        : "No Due Date"}
+                                </h3>
+                                <AnimatePresence>
+                                    {items.map((listItem) => (
+                                        <motion.div
+                                            key={listItem.id}
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 10 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <TodoListItem
+                                                key={listItem.id}
+                                                listItem={listItem}
+                                                deleteItemHandler={
+                                                    deleteItemHandler
+                                                }
+                                                deleteSubtaskHandler={
+                                                    deleteSubtaskHandler
+                                                }
+                                                handleCheckboxChange={
+                                                    handleCheckboxChange
+                                                }
+                                                handleSubtaskCheckboxChange={
+                                                    handleSubtaskCheckboxChange
+                                                }
+                                                editItemHandler={
+                                                    editItemHandler
+                                                }
+                                                editSubtaskItemHandler={
+                                                    editSubtaskItemHandler
+                                                }
+                                                addSubtaskHandler={
+                                                    addSubtaskHandler
+                                                }
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </motion.div>
                         ))}
-                    </div>
+                    </AnimatePresence>
                 </div>
             </div>
         </div>

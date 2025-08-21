@@ -49,11 +49,17 @@
     background: transparent;
 }
 
+.textWrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .itemDescription {
     font-size: 20px;
     cursor: pointer;
     height: auto;
     overflow: hidden;
+    color: var(--main-darkblue);
 }
 
 .itemDescription:hover {
@@ -62,8 +68,15 @@
 
 .finished {
     color: darkgray;
-    pointer-events: none;
-    text-decoration: line-through;
+}
+
+.strikeLine {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 2px;
+    background-color: darkgray;
+    transform: translateY(-50%);
 }
 
 .buttonsWrapper {
@@ -134,7 +147,7 @@
 }
 
 .dropdownButton {
-    padding: 5px;
+    margin: 5px;
     color: gray;
 }
 

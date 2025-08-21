@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import AddItemForm from "./AddItemForm";
 import TodoListItem from "./TodoListItem";
-import type { ListItem } from "../types";
+import type { ListItem, Subtask } from "../types";
 import listImg from "../assets/list.svg";
 import classes from "./TodoList.module.css";
 
@@ -35,10 +35,55 @@ const TodoList = () => {
         setTodoList(todoList.filter((item) => item.id !== id));
     };
 
+    const deleteSubtaskHandler = (itemId: string, subtaskId: string) => {
+        const updatedItems = todoList.map((listItem) => {
+            if (listItem.id === itemId) {
+                return {
+                    ...listItem,
+                    subtasks: listItem.subtasks.filter(
+                        (item) => item.id !== subtaskId
+                    ),
+                };
+            }
+            return listItem;
+        });
+        setTodoList(updatedItems);
+    };
+
     const handleCheckboxChange = (item: ListItem) => {
         const updatedList = todoList.map((element) => {
             if (element.id === item.id) {
-                return { ...element, isCompleted: !item.isCompleted };
+                const newCompleted = !item.isCompleted;
+
+                return {
+                    ...element,
+                    isCompleted: newCompleted,
+                    subtasks: element.subtasks.map((subtask) => ({
+                        ...subtask,
+                        isCompleted: newCompleted,
+                    })),
+                };
+            }
+
+            return element;
+        });
+        setTodoList(updatedList);
+    };
+
+    const handleSubtaskCheckboxChange = (item: ListItem, subtask: Subtask) => {
+        const updatedList = todoList.map((element) => {
+            if (element.id === item.id) {
+                return {
+                    ...element,
+                    subtasks: element.subtasks.map((subtaskElement) =>
+                        subtaskElement.id === subtask.id
+                            ? {
+                                  ...subtaskElement,
+                                  isCompleted: !subtask.isCompleted,
+                              }
+                            : subtaskElement
+                    ),
+                };
             }
             return element;
         });
@@ -53,6 +98,43 @@ const TodoList = () => {
         const updatedList = todoList.map((element) => {
             if (element.id === item.id) {
                 return { ...element, description, dueDate: date };
+            }
+            return element;
+        });
+        setTodoList(updatedList);
+    };
+
+    const editSubtaskItemHandler = (
+        description: string,
+        item: ListItem,
+        subtask: Subtask
+    ) => {
+        const updatedList = todoList.map((element) => {
+            if (element.id === item.id) {
+                return {
+                    ...element,
+                    subtasks: element.subtasks.map((subtaskElement) =>
+                        subtaskElement.id === subtask.id
+                            ? {
+                                  ...subtaskElement,
+                                  description,
+                              }
+                            : subtaskElement
+                    ),
+                };
+            }
+            return element;
+        });
+        setTodoList(updatedList);
+    };
+
+    const addSubtaskHandler = (subtask: Subtask, item: ListItem) => {
+        const updatedList = todoList.map((element) => {
+            if (element.id === item.id) {
+                return {
+                    ...element,
+                    subtasks: [...(element.subtasks ?? []), subtask],
+                };
             }
             return element;
         });
@@ -88,7 +170,7 @@ const TodoList = () => {
                         {sortedGroups.map(([date, items]) => (
                             <div key={date} className={classes.dateGroup}>
                                 {date !== "No Due Date" ? (
-                                    <h3>
+                                    <h3 className={classes.date}>
                                         {new Date(date).toLocaleDateString()}
                                     </h3>
                                 ) : (
@@ -99,10 +181,20 @@ const TodoList = () => {
                                         key={listItem.id}
                                         listItem={listItem}
                                         deleteItemHandler={deleteItemHandler}
+                                        deleteSubtaskHandler={
+                                            deleteSubtaskHandler
+                                        }
                                         handleCheckboxChange={
                                             handleCheckboxChange
                                         }
+                                        handleSubtaskCheckboxChange={
+                                            handleSubtaskCheckboxChange
+                                        }
                                         editItemHandler={editItemHandler}
+                                        editSubtaskItemHandler={
+                                            editSubtaskItemHandler
+                                        }
+                                        addSubtaskHandler={addSubtaskHandler}
                                     />
                                 ))}
                             </div>

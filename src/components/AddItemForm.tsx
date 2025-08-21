@@ -22,6 +22,7 @@ const AddItemForm = ({ addItemHandler }: AddItemFormProps) => {
             description,
             isCompleted: false,
             dueDate: dueDate?.toISOString() ?? null,
+            subtasks: [],
         });
         setDescription("");
         setDueDate(null);

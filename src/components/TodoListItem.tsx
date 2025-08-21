@@ -1,35 +1,51 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { v4 as uuidv4 } from "uuid";
 
-import { FaRegCalendarAlt } from "react-icons/fa";
+import { FaRegCalendarAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineEdit, MdOutlineCheck } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
 
-import type { ListItem } from "../types";
+import type { ListItem, Subtask } from "../types";
+import SubtaskItem from "./SubtaskItem";
 import classes from "./TodoListItem.module.css";
 
 type TodoListItemProps = {
     listItem: ListItem;
     deleteItemHandler: (id: string) => void;
+    deleteSubtaskHandler: (itemId: string, subtaskId: string) => void;
     handleCheckboxChange: (item: ListItem) => void;
+    handleSubtaskCheckboxChange: (item: ListItem, subtask: Subtask) => void;
     editItemHandler: (
         description: string,
         date: string | null,
         item: ListItem
     ) => void;
+    editSubtaskItemHandler: (
+        description: string,
+        item: ListItem,
+        subtast: Subtask
+    ) => void;
+    addSubtaskHandler: (subtask: Subtask, item: ListItem) => void;
 };
 
 const TodoListItem = ({
     listItem,
     deleteItemHandler,
+    deleteSubtaskHandler,
     handleCheckboxChange,
+    handleSubtaskCheckboxChange,
     editItemHandler,
+    editSubtaskItemHandler,
+    addSubtaskHandler,
 }: TodoListItemProps) => {
     const [description, setDescription] = useState(listItem.description);
+    const [subtaskDescription, setSubtaskDescription] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
+    const [showSubtasks, setShowSubtasks] = useState(false);
     const [newDueDate, setNewDueDate] = useState<Date | null>(
         listItem.dueDate ? new Date(listItem.dueDate) : null
     );
@@ -41,23 +57,43 @@ const TodoListItem = ({
         setDescription(event.target.value);
     };
 
+    const subtaskDescriptionChangeHandler = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setSubtaskDescription(event.target.value);
+    };
+
     const toggleEditHandler = () => {
-        setIsEditing((prev) => !prev);
-    };
-
-    const toggleIsClicked = () => {
-        setIsClicked((prev) => !prev);
-    };
-
-    useEffect(() => {
-        if (!isEditing) {
+        if (isEditing) {
             editItemHandler(
                 description,
                 newDueDate?.toISOString() ?? null,
                 listItem
             );
         }
-    }, [isEditing]);
+
+        setIsEditing((prev) => !prev);
+    };
+
+    const toggleIsClicked = () => {
+        if (isClicked && subtaskDescription.trim().length > 0) {
+            addSubtaskHandler(
+                {
+                    id: uuidv4(),
+                    description: subtaskDescription,
+                    isCompleted: false,
+                },
+                listItem
+            );
+        }
+        setSubtaskDescription("");
+
+        setIsClicked((prev) => !prev);
+    };
+
+    const toggleSubtasks = () => {
+        setShowSubtasks((prev) => !prev);
+    };
 
     useEffect(() => {
         if (isEditing && inputRef.current) {
@@ -76,94 +112,175 @@ const TodoListItem = ({
     return (
         <>
             <div className={classes.listItemContainer}>
-                <div className={classes.listItemWrapper}>
-                    <div>
-                        {listItem.isCompleted ? (
-                            <FaCircleCheck
-                                className={classes.checkboxIcon}
-                                onClick={() => handleCheckboxChange(listItem)}
-                            />
-                        ) : (
-                            <div
-                                className={`${classes.checkbox} ${
-                                    listItem.isCompleted ? classes.active : ""
-                                }`}
-                                onClick={() => handleCheckboxChange(listItem)}
-                            ></div>
-                        )}
-                        <input
-                            type="checkbox"
-                            checked={listItem.isCompleted}
-                            onChange={() => handleCheckboxChange(listItem)}
-                            hidden
-                        />
-                    </div>
-
-                    {isEditing ? (
-                        <input
-                            ref={inputRef}
-                            className={classes.editInput}
-                            type="text"
-                            name="description"
-                            value={description}
-                            onChange={descriptionChangeHandler}
+                <div>
+                    {listItem.isCompleted ? (
+                        <FaCircleCheck
+                            className={classes.checkboxIcon}
+                            onClick={() => handleCheckboxChange(listItem)}
                         />
                     ) : (
-                        <p
-                            className={`${classes.itemDescription} ${
-                                listItem.isCompleted ? classes.finished : ""
+                        <div
+                            className={`${classes.checkbox} ${
+                                listItem.isCompleted ? classes.active : ""
                             }`}
-                            onClick={toggleIsClicked}
-                        >
-                            {listItem.description}
-                        </p>
+                            onClick={() => handleCheckboxChange(listItem)}
+                        ></div>
                     )}
+                    <input
+                        type="checkbox"
+                        checked={listItem.isCompleted}
+                        onChange={() => handleCheckboxChange(listItem)}
+                        hidden
+                    />
                 </div>
-
-                <div className={classes.buttonsWrapper}>
-                    {isEditing && (
-                        <div className={classes.dateWrapper}>
-                            <DatePicker
-                                selected={newDueDate}
-                                onChange={(date) => setNewDueDate(date)}
-                                customInput={
-                                    <button
-                                        type="button"
-                                        className={classes.dateButton}
-                                    >
-                                        <FaRegCalendarAlt
-                                            className={classes.dateButtonIcon}
-                                        />
-                                    </button>
-                                }
+                <div className={classes.listItemWrapper}>
+                    {/* <div>
+                        {isEditing ? (
+                            <input
+                                ref={inputRef}
+                                className={classes.editInput}
+                                type="text"
+                                name="description"
+                                value={description}
+                                onChange={descriptionChangeHandler}
                             />
-                        </div>
-                    )}
-                    {!listItem.isCompleted && (
-                        <button onClick={toggleEditHandler}>
-                            {isEditing ? (
-                                <MdOutlineCheck
-                                    className={classes.otherIcons}
-                                />
-                            ) : (
-                                <MdOutlineEdit className={classes.otherIcons} />
-                            )}
-                        </button>
-                    )}
+                        ) : (
+                            <p
+                                className={`${classes.itemDescription} ${
+                                    listItem.isCompleted ? classes.finished : ""
+                                }`}
+                                onClick={toggleIsClicked}
+                            >
+                                {listItem.description}
+                            </p>
+                        )}
+                    </div> */}
+                    <div className={classes.descriptionRow}>
+                        {isEditing ? (
+                            <input
+                                ref={inputRef}
+                                className={classes.editInput}
+                                type="text"
+                                name="description"
+                                value={description}
+                                onChange={descriptionChangeHandler}
+                            />
+                        ) : (
+                            <p
+                                className={`${classes.itemDescription} ${
+                                    listItem.isCompleted ? classes.finished : ""
+                                }`}
+                                onClick={toggleIsClicked}
+                            >
+                                {listItem.description}
+                            </p>
+                        )}
+                        {listItem.subtasks.length > 0 && (
+                            <button
+                                className={classes.dropdownButton}
+                                onClick={toggleSubtasks}
+                                aria-label="Toggle subtasks"
+                            >
+                                {showSubtasks ? (
+                                    <FaChevronUp
+                                        className={classes.dropdownIcon}
+                                    />
+                                ) : (
+                                    <FaChevronDown
+                                        className={classes.dropdownIcon}
+                                    />
+                                )}
+                            </button>
+                        )}
+                    </div>
 
-                    <button onClick={() => deleteItemHandler(listItem.id)}>
-                        <RxCross2
-                            className={`${classes.otherIcons} ${classes.crossIcon}`}
-                        />
-                    </button>
+                    <div className={classes.buttonsWrapper}>
+                        {isEditing && (
+                            <div className={classes.dateWrapper}>
+                                <DatePicker
+                                    selected={newDueDate}
+                                    onChange={(date) => setNewDueDate(date)}
+                                    customInput={
+                                        <button
+                                            type="button"
+                                            className={classes.dateButton}
+                                        >
+                                            <FaRegCalendarAlt
+                                                className={
+                                                    classes.dateButtonIcon
+                                                }
+                                            />
+                                        </button>
+                                    }
+                                />
+                            </div>
+                        )}
+                        {!listItem.isCompleted && (
+                            <button onClick={toggleEditHandler}>
+                                {isEditing ? (
+                                    <MdOutlineCheck
+                                        className={classes.otherIcons}
+                                    />
+                                ) : (
+                                    <MdOutlineEdit
+                                        className={classes.otherIcons}
+                                    />
+                                )}
+                            </button>
+                        )}
+
+                        <button onClick={() => deleteItemHandler(listItem.id)}>
+                            <RxCross2
+                                className={`${classes.otherIcons} ${classes.crossIcon}`}
+                            />
+                        </button>
+                    </div>
                 </div>
             </div>
+            {/* {listItem.subtasks?.length > 0 &&
+                listItem.subtasks.map((subtask) => {
+                    return (
+                        <SubtaskItem
+                            key={subtask.id}
+                            listItem={listItem}
+                            subtask={subtask}
+                            deleteSubtaskHandler={deleteSubtaskHandler}
+                            handleSubtaskCheckboxChange={
+                                handleSubtaskCheckboxChange
+                            }
+                            editSubtaskItemHandler={editSubtaskItemHandler}
+                            addSubtaskHandler={addSubtaskHandler}
+                        />
+                    );
+                })} */}
+            {showSubtasks &&
+                listItem.subtasks?.length > 0 &&
+                listItem.subtasks.map((subtask) => (
+                    <SubtaskItem
+                        key={subtask.id}
+                        listItem={listItem}
+                        subtask={subtask}
+                        deleteSubtaskHandler={deleteSubtaskHandler}
+                        handleSubtaskCheckboxChange={
+                            handleSubtaskCheckboxChange
+                        }
+                        editSubtaskItemHandler={editSubtaskItemHandler}
+                        addSubtaskHandler={addSubtaskHandler}
+                    />
+                ))}
             {isClicked && (
-                <div className={classes.notesContainer}>
-                    <input type="text" placeholder="Add note:" />
-                    <button>
-                        <MdOutlineCheck className={classes.otherIcons} />
-                    </button>
+                <div className={classes.addSubtaskContainer}>
+                    <div className={classes.addSubtaskWrapper}>
+                        <input
+                            type="text"
+                            placeholder="Add Subtask..."
+                            value={subtaskDescription}
+                            onChange={subtaskDescriptionChangeHandler}
+                        />
+                        <button onClick={toggleIsClicked}>
+                            <MdOutlineCheck className={classes.otherIcons} />
+                        </button>
+                    </div>
                 </div>
             )}
         </>

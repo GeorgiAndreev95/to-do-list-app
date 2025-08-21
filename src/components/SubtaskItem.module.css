@@ -1,0 +1,81 @@
+.subtaskContainer {
+    display: flex;
+    margin-left: 30px;
+    margin-bottom: 5px;
+    width: calc(100% - 30px);
+    min-height: 35px;
+    gap: 10px;
+    align-items: center;
+}
+
+.subtaskWrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+}
+
+.checkboxIcon {
+    height: 25px;
+    width: 25px;
+    margin-right: 2px;
+    color: var(--main-coral);
+    cursor: pointer;
+}
+
+.checkboxIcon:hover {
+    color: var(--main-coral-highlight);
+}
+
+.checkbox {
+    height: 25px;
+    width: 25px;
+    border: 2px lightgray solid;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.checkbox:hover {
+    border-color: var(--main-coral);
+}
+
+.editInput {
+    font-size: 18px;
+    border: none;
+    padding: 0;
+    width: 480px;
+    color: rgb(92, 92, 92);
+    padding: 0;
+}
+
+.itemDescription {
+    font-size: 18px;
+    color: rgb(92, 92, 92);
+    overflow: hidden;
+}
+
+.finished {
+    color: darkgray;
+    pointer-events: none;
+    text-decoration: line-through;
+}
+
+.buttonsWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.otherIcons {
+    color: gray;
+    min-height: 25px;
+    min-width: 25px;
+}
+
+.otherIcons:hover {
+    color: black;
+}
+
+.crossIcon:hover {
+    color: red;
+}

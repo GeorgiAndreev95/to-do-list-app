@@ -94,15 +94,17 @@ const SubtaskItem = ({
                         />
                     ) : (
                         <span className={classes.textWrapper}>
-                            <span
-                                className={`${classes.itemDescription} ${
-                                    subtask.isCompleted || listItem.isCompleted
-                                        ? classes.finished
-                                        : ""
-                                }`}
+                            <motion.span
+                                className={classes.itemDescription}
+                                animate={{
+                                    color: listItem.isCompleted
+                                        ? "#aaa"
+                                        : "#5c5c5c",
+                                }}
+                                transition={{ duration: 0.3 }}
                             >
                                 {subtask.description}
-                            </span>
+                            </motion.span>
                             <motion.span
                                 className={classes.strikeLine}
                                 initial={false}

@@ -155,15 +155,17 @@ const TodoListItem = ({
                                 className={classes.textWrapper}
                                 onClick={toggleIsClicked}
                             >
-                                <span
-                                    className={`${classes.itemDescription} ${
-                                        listItem.isCompleted
-                                            ? classes.finished
-                                            : ""
-                                    }`}
+                                <motion.span
+                                    className={classes.itemDescription}
+                                    animate={{
+                                        color: listItem.isCompleted
+                                            ? "#aaa"
+                                            : "#000030",
+                                    }}
+                                    transition={{ duration: 0.3 }}
                                 >
                                     {listItem.description}
-                                </span>
+                                </motion.span>
                                 <motion.span
                                     className={classes.strikeLine}
                                     initial={false}

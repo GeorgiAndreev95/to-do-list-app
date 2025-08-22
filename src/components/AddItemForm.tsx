@@ -39,7 +39,7 @@ const AddItemForm = ({ addItemHandler }: AddItemFormProps) => {
                 type="text"
                 name="description"
                 required
-                placeholder="Add Task Here"
+                placeholder="Add New Task"
                 value={description}
                 onChange={onInputChange}
                 autoComplete="off"
@@ -49,6 +49,7 @@ const AddItemForm = ({ addItemHandler }: AddItemFormProps) => {
                 <DatePicker
                     selected={dueDate}
                     onChange={(date) => setDueDate(date)}
+                    minDate={new Date()}
                     customInput={
                         <button type="button" className={classes.dateButton}>
                             <FaRegCalendarAlt

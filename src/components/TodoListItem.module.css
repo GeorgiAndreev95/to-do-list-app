@@ -68,6 +68,7 @@
 
 .finished {
     color: darkgray;
+    pointer-events: none;
 }
 
 .strikeLine {
@@ -112,6 +113,10 @@
 
 .crossIcon:hover {
     color: red;
+}
+
+.subtasksWrapper {
+    overflow: hidden;
 }
 
 .addSubtaskContainer {

@@ -58,6 +58,7 @@
     font-size: 18px;
     color: rgb(92, 92, 92);
     overflow: hidden;
+    cursor: default;
 }
 
 .finished {

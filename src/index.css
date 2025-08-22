@@ -85,3 +85,7 @@ button {
     padding: 0;
     cursor: pointer;
 }
+
+*::-webkit-scrollbar {
+    display: none;
+}

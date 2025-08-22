@@ -77,6 +77,10 @@ const TodoListItem = ({
     };
 
     const toggleIsClicked = () => {
+        if (listItem.isCompleted) {
+            return;
+        }
+
         if (isClicked && subtaskDescription.trim().length > 0) {
             addSubtaskHandler(
                 {
@@ -86,6 +90,7 @@ const TodoListItem = ({
                 },
                 listItem
             );
+            setShowSubtasks(true);
         }
         setSubtaskDescription("");
 
@@ -197,6 +202,7 @@ const TodoListItem = ({
                                 <DatePicker
                                     selected={newDueDate}
                                     onChange={(date) => setNewDueDate(date)}
+                                    minDate={new Date()}
                                     customInput={
                                         <button
                                             type="button"
@@ -243,47 +249,55 @@ const TodoListItem = ({
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className={classes.subtasksWrapper}
                     >
-                        {listItem.subtasks?.map((subtask) => (
-                            <SubtaskItem
-                                key={subtask.id}
-                                listItem={listItem}
-                                subtask={subtask}
-                                deleteSubtaskHandler={deleteSubtaskHandler}
-                                handleSubtaskCheckboxChange={
-                                    handleSubtaskCheckboxChange
-                                }
-                                editSubtaskItemHandler={editSubtaskItemHandler}
-                                addSubtaskHandler={addSubtaskHandler}
-                            />
-                        ))}
+                        <AnimatePresence>
+                            {listItem.subtasks?.map((subtask) => (
+                                <motion.div
+                                    key={subtask.id}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <SubtaskItem
+                                        listItem={listItem}
+                                        subtask={subtask}
+                                        deleteSubtaskHandler={
+                                            deleteSubtaskHandler
+                                        }
+                                        handleSubtaskCheckboxChange={
+                                            handleSubtaskCheckboxChange
+                                        }
+                                        editSubtaskItemHandler={
+                                            editSubtaskItemHandler
+                                        }
+                                        addSubtaskHandler={addSubtaskHandler}
+                                    />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </motion.div>
                 )}
             </AnimatePresence>
-            <AnimatePresence>
-                {isClicked && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className={classes.addSubtaskContainer}
-                    >
-                        <div className={classes.addSubtaskWrapper}>
-                            <input
-                                type="text"
-                                placeholder="Add Subtask..."
-                                value={subtaskDescription}
-                                onChange={subtaskDescriptionChangeHandler}
-                            />
-                            <button onClick={toggleIsClicked}>
-                                <MdOutlineCheck
-                                    className={classes.otherIcons}
-                                />
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {isClicked && (
+                <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className={classes.addSubtaskContainer}
+                >
+                    <div className={classes.addSubtaskWrapper}>
+                        <input
+                            type="text"
+                            placeholder="Add Subtask..."
+                            value={subtaskDescription}
+                            onChange={subtaskDescriptionChangeHandler}
+                        />
+                        <button onClick={toggleIsClicked}>
+                            <MdOutlineCheck className={classes.otherIcons} />
+                        </button>
+                    </div>
+                </motion.div>
+            )}
         </>
     );
 };

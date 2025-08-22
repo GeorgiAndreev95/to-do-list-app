@@ -142,6 +142,15 @@ const TodoList = () => {
         setTodoList(updatedList);
     };
 
+    const isToday = (date: Date) => {
+        const today = new Date();
+        return (
+            date.getDate() === today.getDate() &&
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear()
+        );
+    };
+
     useEffect(() => {
         const storedList = localStorage.getItem("todoList");
         if (storedList) {
@@ -180,7 +189,11 @@ const TodoList = () => {
                             >
                                 <h3 className={classes.date}>
                                     {date !== "No Due Date"
-                                        ? new Date(date).toLocaleDateString()
+                                        ? isToday(new Date(date))
+                                            ? "Today"
+                                            : new Date(
+                                                  date
+                                              ).toLocaleDateString()
                                         : "No Due Date"}
                                 </h3>
                                 <AnimatePresence>

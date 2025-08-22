@@ -40,6 +40,24 @@ The main goal of this project is to strengthen my understanding of:
 
 **Main Task List**
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/39e6e246-dd99-4700-8f33-5892851b81e4" alt="Main task list" /
+</div>
+
+<br />
+<br />
+
 **Due Date Picker**
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a8579f66-0197-43e2-a7e2-a5c38580bcdc" alt="Due date picker" /
+</div>
+
+<br />
+<br />
+
 **Adding a Subtask**
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/b253181a-d268-452f-9046-c716cf06f2a3" alt="Add subtask" /
+</div>

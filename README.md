@@ -45,7 +45,6 @@ The main goal of this project is to strengthen my understanding of:
 </div>
 
 <br />
-<br />
 
 **Due Date Picker**
 
@@ -53,7 +52,6 @@ The main goal of this project is to strengthen my understanding of:
   <img src="https://github.com/user-attachments/assets/a8579f66-0197-43e2-a7e2-a5c38580bcdc" alt="Due date picker" /
 </div>
 
-<br />
 <br />
 
 **Adding a Subtask**
